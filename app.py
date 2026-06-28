@@ -171,9 +171,63 @@ if st.button("🚀 RUN AI AGENT"):
     # OUTPUT - SCHEDULE
     # ============================================================
 
-    st.subheader("📅 Optimized Schedule")
+# ============================================================
+# Schedule Table UI
+# ============================================================
 
-    st.json(optimized_week)
+import pandas as pd
+
+st.subheader("📅 AI Optimized Weekly Schedule")
+
+day_names = {
+    "Monday": "월요일",
+    "Tuesday": "화요일",
+    "Wednesday": "수요일",
+    "Thursday": "목요일",
+    "Friday": "금요일",
+    "Saturday": "토요일",
+    "Sunday": "일요일"
+}
+
+for day in optimized_week:
+
+    st.markdown(f"## 🗓️ {day_names.get(day, day)}")
+
+    schedules = sorted(
+        optimized_week[day],
+        key=lambda x: x["start"]
+    )
+
+    rows = []
+
+    for s in schedules:
+
+        rows.append({
+
+            "시간":
+                f"{s['start']:02d}:00 ~ {s['end']:02d}:00",
+
+            "일정":
+                s["task"],
+
+            "종류":
+                s["type"]
+
+        })
+
+    if len(rows)==0:
+
+        st.info("일정 없음")
+
+    else:
+
+        df = pd.DataFrame(rows)
+
+        st.dataframe(
+            df,
+            use_container_width=True,
+            hide_index=True
+        )
 
     # ============================================================
     # OUTPUT - STRESS
