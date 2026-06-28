@@ -237,7 +237,15 @@ def recommend_break(score):
 
 def summary_text(result):
 
-    return (
-        f"예상 스트레스는 {result['score']}점이며 "
-        f"위험도는 '{result['level']}' 입니다."
-    )
+    score = result.get("score",0)
+
+    if score>=85:
+        level="매우 높음"
+    elif score>=70:
+        level="높음"
+    elif score>=45:
+        level="보통"
+    else:
+        level="낮음"
+
+    return f"예상 스트레스는 {score}점이며 위험도는 '{level}' 입니다."
