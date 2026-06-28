@@ -235,7 +235,30 @@ for day in optimized_week:
 
     st.subheader("📊 Stress Analysis")
 
-    st.write("Total Score:", stress_score)
+st.subheader("🧠 Today's Stress")
+
+st.metric(
+    "Stress Score",
+    f"{stress_score:.1f}"
+)
+
+st.progress(min(stress_score/100,1.0))
+
+if stress_score>=80:
+
+    st.error("🔥 매우 높은 스트레스 예상")
+
+elif stress_score>=60:
+
+    st.warning("⚠ 적절한 휴식 권장")
+
+elif stress_score>=40:
+
+    st.info("🙂 적당한 업무량")
+
+else:
+
+    st.success("😄 여유로운 일정")
 
     st.json(daily)
 
