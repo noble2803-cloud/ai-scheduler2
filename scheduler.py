@@ -1,105 +1,264 @@
-import pandas as pd
-import streamlit as st
+# ============================================================
+# scheduler.py (v4)
+# AI Scheduler Agent Core
+# ============================================================
 
+from copy import deepcopy
+import random
 
-DAY_MAP = {
-"Monday": "월",
-"Tuesday": "화",
-"Wednesday": "수",
-"Thursday": "목",
-"Friday": "금"
-}
+# ============================================================
+# 기본 설정
+# ============================================================
 
+WORK_START = 9
+WORK_END = 18
 
-def make_calendar(week):
+MAX_REPLAN = 2
+STRESS_THRESHOLD = 70
 
-rows = []
+# ============================================================
+# Priority Score
+# ============================================================
 
-for h in range(9, 19):
+def calculate_priority(task):
 
-rows.append({
+    urgency = (8 - task["deadline"]) * 15
+    importance = task["importance"] * 12
+    difficulty = task["difficulty"] * 8
+    duration = task["duration"] * 5
 
-"시간": f"{h:02d}:00",
+    return urgency + importance + difficulty + duration
 
-"월": "",
+# ============================================================
+# 빈 시간 찾기
+# ============================================================
 
-"화": "",
+def find_slot(schedule, duration):
 
-"수": "",
+    schedule = sorted(schedule, key=lambda x: x["start"])
 
-"목": "",
+    current = WORK_START
 
-"금": ""
+    for item in schedule:
 
-})
+        if item["start"] - current >= duration:
+            return current
 
-df = pd.DataFrame(rows)
+        current = max(current, item["end"])
 
-for day in week:
+    if WORK_END - current >= duration:
+        return current
 
-if day not in DAY_MAP:
-continue
+    return None
 
-col = DAY_MAP[day]
+# ============================================================
+# 일정 추가
+# ============================================================
 
-for task in week[day]:
+def place_task(day_schedule, task):
 
-hour = task["start"]
+    slot = find_slot(day_schedule, task["duration"])
 
-if 9 <= hour <= 18:
+    if slot is None:
+        return False
 
-idx = hour - 9
+    day_schedule.append({
 
-text = task["task"]
+        "task": task["name"],
+        "start": slot,
+        "end": slot + task["duration"],
+        "type": "AI"
 
-                if task.get("changed"):
+    })
 
-                    text = "🟨 " + task["task"]
+    return True
 
+# ============================================================
+# 휴식 추가
+# ============================================================
 
-                elif task.get("added"):
+def insert_rest(day_schedule):
 
-                    text = "🟩 " + task["task"]
+    if random.random() < 0.6:
 
-                else:
+        slot = find_slot(day_schedule, 1)
 
-                    text = task["task"]
-                df.loc[idx, col] = text
-return df
+        if slot is not None:
 
+            day_schedule.append({
 
-def compare_calendar(before, after):
+                "task": random.choice([
+                    "☕ 커피타임",
+                    "🚶 산책",
+                    "🧘 스트레칭",
+                    "🍪 간식"
+                ]),
 
-st.header("📊 Before vs After")
+                "start": slot,
+                "end": slot + 1,
+                "type": "REST"
 
-c1, c2 = st.columns(2)
+            })
 
-with c1:
+# ============================================================
+# 기본 스케줄 생성
+# ============================================================
 
-st.subheader("기존 일정")
+def optimize_schedule(tasks, week):
 
-st.dataframe(
+    week = deepcopy(week)
 
-make_calendar(before),
+    logs = []
 
-hide_index=True,
+    sorted_tasks = sorted(
+        tasks,
+        key=calculate_priority,
+        reverse=True
+    )
 
-use_container_width=True
+    for task in sorted_tasks:
 
-)
+        best_day = None
 
-with c2:
+        for day in week.keys():
 
-st.subheader("AI 최적화")
+            temp = deepcopy(week[day])
 
-st.dataframe(
+            if place_task(temp, task):
 
-make_calendar(after),
+                week[day] = temp
 
-hide_index=True,
+                best_day = day
 
-use_container_width=True
+                break
 
-)
+        if best_day:
 
-    st.info("🟨 : AI가 새롭게 추가한 일정")
+            logs.append({
+
+                "task": task["name"],
+                "day": best_day,
+                "priority": calculate_priority(task)
+
+            })
+
+    return week, logs
+
+# ============================================================
+# Task 재정렬
+# ============================================================
+
+def reprioritize(tasks):
+
+    new_tasks = deepcopy(tasks)
+
+    for task in new_tasks:
+
+        if task["difficulty"] >= 4:
+
+            task["deadline"] += 1
+
+    return sorted(
+        new_tasks,
+        key=calculate_priority,
+        reverse=True
+    )
+
+# ============================================================
+# 스케줄 흔들기
+# ============================================================
+
+def perturb_schedule(week):
+
+    week = deepcopy(week)
+
+    days = list(week.keys())
+
+    if len(days) < 2:
+        return week
+
+    source = random.choice(days)
+    target = random.choice(days)
+
+    if source == target:
+        return week
+
+    if len(week[source]) == 0:
+        return week
+
+    moved = week[source].pop()
+    
+    week[target].append(moved)
+
+    return week
+
+# ============================================================
+# Agent Loop
+# ============================================================
+
+def agent_optimize(
+
+    tasks,
+    base_week,
+    reflect_fn,
+    replan_fn
+
+):
+
+    week = deepcopy(base_week)
+
+    history = []
+
+    logs = []
+
+    for round_idx in range(MAX_REPLAN):
+
+        week, logs = optimize_schedule(tasks, week)
+
+        stress = reflect_fn(week)
+
+        need_replan = replan_fn(stress)
+
+        history.append({
+
+            "round": round_idx + 1,
+
+            "stress": stress,
+
+            "replan": need_replan
+
+        })
+
+        if not need_replan:
+
+            break
+
+        tasks = reprioritize(tasks)
+
+        week = perturb_schedule(week)
+
+    # 휴식 자동 삽입
+    for day in week:
+
+        insert_rest(week[day])
+
+    return week, logs, history
+
+# ============================================================
+# 발표용 Thinking Log
+# ============================================================
+
+def generate_thinking(logs):
+
+    thinking = []
+
+    for log in logs:
+
+        thinking.append(
+
+            f"{log['task']}의 우선순위({log['priority']})가 높아 "
+            f"{log['day']}에 우선 배치했습니다."
+
+        )
+
+    return thinking
