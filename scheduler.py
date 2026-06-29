@@ -67,7 +67,9 @@ def place_task(day_schedule, task):
         "task": task["name"],
         "start": slot,
         "end": slot + task["duration"],
-        "type": "AI"
+        "type": "AI",
+        "added":True,
+        "changed":False,
         "fixed": task.get("fixed", False)
 
     })
