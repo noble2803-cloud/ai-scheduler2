@@ -47,7 +47,41 @@ st.set_page_config(
 st.title("🧠 AI Scheduler Agent")
 
 st.caption("AI가 사용자의 업무를 분석하여 최적의 일정을 생성합니다.")
+# ============================================================
+# 현재 일정 Dashboard
+# ============================================================
 
+st.header("📅 현재 일정")
+
+flat = flatten_week(base_week)
+stress = analyze_schedule(flat)
+
+score = stress["score"]
+
+col1, col2 = st.columns([3, 1])
+
+with col1:
+
+    st.metric(
+        "🔥 현재 Stress",
+        f"{score:.1f}"
+    )
+
+    st.progress(min(score / 100, 1.0))
+
+with col2:
+
+    if score >= 80:
+        st.error("매우 높음")
+
+    elif score >= 60:
+        st.warning("높음")
+
+    elif score >= 40:
+        st.info("보통")
+
+    else:
+        st.success("낮음")
 # ============================================================
 # SESSION
 # ============================================================
@@ -226,8 +260,17 @@ if run:
     # 기존 일정 생성
     # --------------------------------------------------------
 
-    base_week = generate_base_week()
+    # base_week = generate_base_week()
 
+    # ============================================================
+# 기존 일정(Session 유지)
+# ============================================================
+
+if "base_week" not in st.session_state:
+    st.session_state.base_week = generate_base_week()
+
+base_week = st.session_state.base_week
+    
     # --------------------------------------------------------
     # DEMO MODE
     # --------------------------------------------------------
