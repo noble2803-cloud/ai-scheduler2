@@ -219,6 +219,15 @@ else:
 
         st.rerun()
 
+    for task in week[day]:
+
+        fixed = st.checkbox(
+            task["task"],
+            key=f"{day}_{task['task']}"
+        )
+
+        task["fixed"] = fixed
+
 # ============================================================
 # RUN
 # ============================================================
