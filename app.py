@@ -444,7 +444,14 @@ if st.session_state.result is not None:
         "Sunday":"일요일"
     }
 
-        
+        for i, task in enumerate(week[day]):
+
+            fixed = st.checkbox(
+                task["task"],
+                key=f"{day}_{i}_{task['start']}_{task['end']}"
+            )
+
+        task["fixed"] = fixed
         rows=[]
         schedules=sorted(
             week[day],
