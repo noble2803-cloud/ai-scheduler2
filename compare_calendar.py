@@ -10,6 +10,10 @@ DAY_MAP = {
     "Friday": "금"
 }
 
+st.info(
+    "🟩 : AI가 새로 추가한 일정\n\n"
+    "🟨 : AI가 위치를 변경한 일정"
+)
 
 def make_calendar(week):
 
