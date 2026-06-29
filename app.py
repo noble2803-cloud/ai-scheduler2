@@ -435,29 +435,38 @@ if st.session_state.result is not None:
 
     show_changes(changes)
     day_name = {
-        "Monday":"월요일",
-        "Tuesday":"화요일",
-        "Wednesday":"수요일",
-        "Thursday":"목요일",
-        "Friday":"금요일",
-        "Saturday":"토요일",
-        "Sunday":"일요일"
+    "Monday":"월요일",
+    "Tuesday":"화요일",
+    "Wednesday":"수요일",
+    "Thursday":"목요일",
+    "Friday":"금요일",
+    "Saturday":"토요일",
+    "Sunday":"일요일"
     }
 
-        for i, task in enumerate(week[day]):
+    for day in week:
 
+        st.subheader(f"🗓️ {day_name.get(day, day)}")
+        rows = []
+        schedules = sorted(
+            week[day],
+            key=lambda x: x["start"]
+        )
+
+        for i, task in enumerate(schedules):
             fixed = st.checkbox(
                 task["task"],
                 key=f"{day}_{i}_{task['start']}_{task['end']}"
             )
+            task["fixed"] = fixed
+            rows.append({
+                "시간": f"{task['start']:02d}:00 ~ {task['end']:02d}:00",
+                "일정": task["task"]
+            })
 
-        task["fixed"] = fixed
-        rows=[]
-        schedules=sorted(
-            week[day],
-            key=lambda x:x["start"]
+        df = pd.DataFrame(rows)
 
-        )
+        st.dataframe(df, use_container_width=True, hide_index=True)
 
         for item in schedules:
 
