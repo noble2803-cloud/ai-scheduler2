@@ -257,6 +257,11 @@ else:
 
 run = st.button("🚀 AI 스케줄 생성")
 
+if "base_week" not in st.session_state:
+    st.session_state.base_week = generate_base_week()
+
+base_week = st.session_state.base_week
+
 # ============================================================
 # RUN AGENT
 # ============================================================
@@ -273,10 +278,7 @@ if run:
 # 기존 일정(Session 유지)
 # ============================================================
 
-if "base_week" not in st.session_state:
-    st.session_state.base_week = generate_base_week()
 
-base_week = st.session_state.base_week
     
     # --------------------------------------------------------
     # DEMO MODE
