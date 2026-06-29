@@ -12,6 +12,7 @@ from compare_calendar import compare_calendar
 from agent_animation import run_agent_animation
 from scheduler import agent_optimize
 from stress_compare import draw_stress_compare
+from ai_reason import show_reason
 from change_analyzer import (
     analyze_changes,
     show_changes
