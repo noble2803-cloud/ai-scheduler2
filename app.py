@@ -219,14 +219,6 @@ else:
 
         st.rerun()
 
-    for task in week[day]:
-
-        fixed = st.checkbox(
-            task["task"],
-            key=f"{day}_{task['task']}"
-        )
-
-        task["fixed"] = fixed
 
 # ============================================================
 # RUN
@@ -407,15 +399,11 @@ if st.session_state.result is not None:
     score = stress["score"]
 
     daily = stress["daily"]
-
+    
     st.divider()
-
     compare_calendar(
-
     base_week,
-
     week
-
 )
     before = analyze_schedule(
 
@@ -457,15 +445,18 @@ if st.session_state.result is not None:
     }
 
     for day in week:
-
         st.subheader(f"🗓️ {day_name[day]}")
+        for task in week[day]:
+            fixed = st.checkbox(
+                task["task"],
+                key=f"{day}_{task['task']}"
+            )
+            task["fixed"] = fixed
 
+        
         rows=[]
-
         schedules=sorted(
-
             week[day],
-
             key=lambda x:x["start"]
 
         )
