@@ -41,7 +41,7 @@ def find_slot(schedule, duration):
 
     for item in schedule:
 
-        if item["start"] - current >= duration:
+        if item["start"] - current >= duration+1:
             return current
 
         current = max(current, item["end"])
