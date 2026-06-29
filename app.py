@@ -553,9 +553,19 @@ if st.session_state.result is not None:
             ]
         )
 
+
+        graph = pd.DataFrame({
+        "요일":list(daily.keys()),
+        "Stress":[
+        daily[d]["score"]
+        for d in daily
+        ]
+        })
         st.bar_chart(
-            daily_df.set_index("요일")
+        graph.set_index("요일")
         )
+
+    
 
     # ============================================================
     # AI Reasoning
