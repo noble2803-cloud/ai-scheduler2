@@ -63,7 +63,7 @@ def make_calendar(week):
                 else:
 
                     text = task["task"]
-
+                df.loc[idx, col] = text
     return df
 
 
