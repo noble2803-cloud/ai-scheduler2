@@ -407,49 +407,41 @@ if st.session_state.result is not None:
 )
     before = analyze_schedule(
 
-    flatten_week(base_week)
+        flatten_week(base_week)
 
 )["score"]
 
-after = analyze_schedule(
+    after = analyze_schedule(
 
-    flatten_week(week)
+        flatten_week(week)
 
 )["score"]
 
-draw_stress_compare(
+    draw_stress_compare(
 
-    before,
+        before,
 
-    after
-
-)
-
-changes = analyze_changes(
-
-    base_week,
-
-    week
+        after
 
 )
 
-show_changes(changes)
+    changes = analyze_changes(
+
+        base_week,
+
+        week
+
+)
+
+    show_changes(changes)
     day_name = {
-
         "Monday":"월요일",
-
         "Tuesday":"화요일",
-
         "Wednesday":"수요일",
-
         "Thursday":"목요일",
-
         "Friday":"금요일",
-
         "Saturday":"토요일",
-
         "Sunday":"일요일"
-
     }
 
     for day in week:
