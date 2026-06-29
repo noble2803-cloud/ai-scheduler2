@@ -52,11 +52,17 @@ def make_calendar(week):
 
                 text = task["task"]
 
-                if task.get("type") == "AI":
+                if task.get("changed"):
 
-                    text = "🟨 " + text
+                    text = "🟨 " + task["task"]
 
-                df.loc[idx, col] = text
+                elif task.get("added"):
+
+                    text = "🟩 " + task["task"]
+
+                else:
+
+                    text = task["task"]
 
     return df
 
