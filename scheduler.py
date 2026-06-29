@@ -68,6 +68,7 @@ def place_task(day_schedule, task):
         "start": slot,
         "end": slot + task["duration"],
         "type": "AI"
+        "fixed": task.get("fixed", False)
 
     })
 
@@ -187,7 +188,18 @@ def perturb_schedule(week):
         return week
 
     moved = week[source].pop()
+    
+    movable = [
+        x for x in week[source]
+        if not x.get("fixed", False)
+    ]
+    if len(movable) == 0:
+        return week
 
+    moved = random.choice(movable)
+    week[source].remove(moved)
+
+    moved["changed"] = True
     week[target].append(moved)
 
     return week
