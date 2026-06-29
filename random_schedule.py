@@ -199,7 +199,7 @@ def generate_day():
     # 퇴근 전
     # ---------------------------
 
-    if random.random() < 0.8:
+    if random.random() < 0.3:
 
         add_schedule(
 
