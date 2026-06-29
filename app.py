@@ -40,7 +40,6 @@ from gemini_ai import (
 
 from demo_engine import run_demo
 
-draw_calendar(base_week)
 # ============================================================
 # PAGE
 # ============================================================
@@ -261,6 +260,8 @@ if "base_week" not in st.session_state:
     st.session_state.base_week = generate_base_week()
 
 base_week = st.session_state.base_week
+
+draw_calendar(base_week)
 
 # ============================================================
 # RUN AGENT
