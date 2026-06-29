@@ -465,6 +465,23 @@ if st.session_state.result is not None:
             })
 
         df = pd.DataFrame(rows)
+        # ===============================
+        # 🔥 Stress Row 추가
+        # ===============================
+
+        stress_row = {
+            "시간": "🔥 Stress"
+        }
+
+        day_keys = ["월", "화", "수", "목", "금"]
+
+        for col in day_keys:
+            stress_row[col] = ""
+
+        df = pd.concat(
+            [pd.DataFrame([stress_row]), df],
+            ignore_index=True
+        )
 
         st.dataframe(df, use_container_width=True, hide_index=True)
 
