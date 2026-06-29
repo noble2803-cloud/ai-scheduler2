@@ -11,6 +11,10 @@ from calendar_ui import draw_calendar
 from compare_calendar import compare_calendar
 from agent_animation import run_agent_animation
 from scheduler import agent_optimize
+from change_analyzer import (
+    analyze_changes,
+    show_changes
+)
 from stress import (
     flatten_week,
     analyze_schedule,
@@ -398,7 +402,15 @@ if st.session_state.result is not None:
     week
 
 )
+changes = analyze_changes(
 
+    base_week,
+
+    week
+
+)
+
+show_changes(changes)
     day_name = {
 
         "Monday":"월요일",
