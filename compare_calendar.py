@@ -10,10 +10,6 @@ DAY_MAP = {
     "Friday": "금"
 }
 
-st.info(
-    "🟩 : AI가 새로 추가한 일정\n\n"
-    "🟨 : AI가 위치를 변경한 일정"
-)
 
 def make_calendar(week):
 
@@ -56,18 +52,12 @@ def make_calendar(week):
 
                 text = task["task"]
 
-                if task.get("changed"):
+                if task.get("type") == "AI":
 
-                    text = "🟨 " + task["task"]
+                    text = "🟨 " + text
 
-                elif task.get("added"):
-
-                    text = "🟩 " + task["task"]
-
-                else:
-
-                    text = task["task"]
                 df.loc[idx, col] = text
+
     return df
 
 
