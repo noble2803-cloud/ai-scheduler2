@@ -192,8 +192,11 @@ def perturb_schedule(week):
     moved = week[source].pop()
     
     movable = [
-        x for x in week[source]
-        if not x.get("fixed", False)
+
+        t
+
+        for t in week[source]
+        if not t.get("fixed", False)
     ]
     if len(movable) == 0:
         return week
