@@ -117,7 +117,7 @@ def generate_day():
     # 오전 업무
     # ---------------------------
 
-    if random.random() < 0.8:
+    if random.random() < 0.4:
 
         add_schedule(
 
@@ -159,7 +159,7 @@ def generate_day():
 
     while hour < 17:
 
-        if random.random() < 0.75:
+        if random.random() < 0.45:
 
             add_schedule(
 
@@ -174,6 +174,8 @@ def generate_day():
                 "FIXED"
 
             )
+        elif random.random() < 0.25:   # 🔥 빈 시간 추가
+            pass  # 완전 빈 시간
 
         else:
 
