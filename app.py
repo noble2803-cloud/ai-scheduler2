@@ -444,15 +444,6 @@ if st.session_state.result is not None:
         "Sunday":"일요일"
     }
 
-    for day in week:
-        st.subheader(f"🗓️ {day_name[day]}")
-        for task in week[day]:
-            fixed = st.checkbox(
-                task["task"],
-                key=f"{day}_{task['task']}"
-            )
-            task["fixed"] = fixed
-
         
         rows=[]
         schedules=sorted(
