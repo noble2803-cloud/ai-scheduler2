@@ -173,7 +173,9 @@ if st.button("➕ 일정 추가"):
 
             "difficulty":difficulty,
 
-            "duration":duration
+            "duration":duration,
+
+            "fixed": fixed
 
         })
 
