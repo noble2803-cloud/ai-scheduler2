@@ -7,7 +7,7 @@
 import streamlit as st
 import pandas as pd
 import time
-
+from calendar_ui import draw_calendar
 from scheduler import agent_optimize
 from stress import (
     flatten_week,
@@ -33,7 +33,7 @@ from gemini_ai import (
 
 from demo_engine import run_demo
 
-
+draw_calendar(base_week)
 # ============================================================
 # PAGE
 # ============================================================
