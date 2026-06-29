@@ -11,6 +11,7 @@ from calendar_ui import draw_calendar
 from compare_calendar import compare_calendar
 from agent_animation import run_agent_animation
 from scheduler import agent_optimize
+from stress_compare import draw_stress_compare
 from change_analyzer import (
     analyze_changes,
     show_changes
@@ -402,6 +403,26 @@ if st.session_state.result is not None:
     week
 
 )
+    before = analyze_schedule(
+
+    flatten_week(base_week)
+
+)["score"]
+
+after = analyze_schedule(
+
+    flatten_week(week)
+
+)["score"]
+
+draw_stress_compare(
+
+    before,
+
+    after
+
+)
+
 changes = analyze_changes(
 
     base_week,
