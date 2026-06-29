@@ -14,29 +14,29 @@ from scheduler import agent_optimize
 from stress_compare import draw_stress_compare
 from ai_reason import show_reason
 from change_analyzer import (
-    analyze_changes,
-    show_changes
+analyze_changes,
+show_changes
 )
 from stress import (
-    flatten_week,
-    analyze_schedule,
-    recommend_break,
-    summary_text
+flatten_week,
+analyze_schedule,
+recommend_break,
+summary_text
 )
 
 from random_schedule import generate_base_week
 
 from decision_engine import (
-    generate_reasoning,
-    overall_comment
+generate_reasoning,
+overall_comment
 )
 
 from gemini_ai import (
-    decide_replan,
-    explain_schedule,
-    one_line_summary,
-    recommend_action,
-    APP_MODE
+decide_replan,
+explain_schedule,
+one_line_summary,
+recommend_action,
+APP_MODE
 )
 
 from demo_engine import run_demo
@@ -46,9 +46,9 @@ from demo_engine import run_demo
 # ============================================================
 
 st.set_page_config(
-    page_title="AI Scheduler Agent",
-    page_icon="🧠",
-    layout="wide"
+page_title="AI Scheduler Agent",
+page_icon="🧠",
+layout="wide"
 )
 
 st.title("🧠 AI Scheduler Agent")
@@ -60,10 +60,10 @@ st.caption("AI가 사용자의 업무를 분석하여 최적의 일정을 생성
 # ============================================================
 
 if "tasks" not in st.session_state:
-    st.session_state.tasks = []
+st.session_state.tasks = []
 
 if "result" not in st.session_state:
-    st.session_state.result = None
+st.session_state.result = None
 
 # ============================================================
 # SIDEBAR
@@ -71,17 +71,17 @@ if "result" not in st.session_state:
 
 mode = st.sidebar.selectbox(
 
-    "AI Mode",
+"AI Mode",
 
-    [
+[
 
-        "LIVE",
+"LIVE",
 
-        "FALLBACK",
+"FALLBACK",
 
-        "DEMO"
+"DEMO"
 
-    ]
+]
 
 )
 
@@ -99,85 +99,83 @@ c1,c2,c3,c4 = st.columns(4)
 
 with c1:
 
-    task_name = st.text_input("일정 이름")
+task_name = st.text_input("일정 이름")
 
 with c2:
 
-    deadline = st.selectbox(
+deadline = st.selectbox(
 
-        "마감일",
+"마감일",
 
-        [1,2,3,4,5,6,7]
+[1,2,3,4,5,6,7]
 
-    )
+)
 
 with c3:
 
-    importance = st.slider(
+importance = st.slider(
 
-        "중요도",
+"중요도",
 
-        1,
+1,
 
-        5,
+5,
 
-        3
+3
 
-    )
+)
 
 with c4:
 
-    difficulty = st.slider(
+difficulty = st.slider(
 
-        "업무강도",
+"업무강도",
 
-        1,
+1,
 
-        5,
+5,
 
-        3
+3
 
-    )
+)
 
 duration = st.slider(
 
-    "소요시간",
+"소요시간",
 
-    1,
+1,
 
-    4,
+4,
 
-    2
+2
 
 )
-fixed = st.checkbox("🔒 일정 고정", value=False)
+
 # ============================================================
 # BUTTON
 # ============================================================
 
 if st.button("➕ 일정 추가"):
 
-    if task_name.strip()=="":
+if task_name.strip()=="":
 
-        st.warning("일정 이름을 입력하세요.")
+st.warning("일정 이름을 입력하세요.")
 
-    else:
+else:
 
-        st.session_state.tasks.append({
+st.session_state.tasks.append({
 
-            "name":task_name,
+"name":task_name,
 
-            "deadline":deadline,
+"deadline":deadline,
 
-            "importance":importance,
+"importance":importance,
 
-            "difficulty":difficulty,
+"difficulty":difficulty,
 
-            "duration":duration,
+"duration":duration
 
-            "fixed": fixed
-
-        })
+})
 
 # ============================================================
 # TASK LIST
@@ -187,38 +185,37 @@ st.subheader("📋 입력된 일정")
 
 if len(st.session_state.tasks)==0:
 
-    st.info("추가된 일정이 없습니다.")
+st.info("추가된 일정이 없습니다.")
 
 else:
 
-    remove=None
+remove=None
 
-    for i,task in enumerate(st.session_state.tasks):
+for i,task in enumerate(st.session_state.tasks):
 
-        col1,col2=st.columns([9,1])
+col1,col2=st.columns([9,1])
 
-        with col1:
+with col1:
 
-            st.write(
-                f"**{task['name']}** | "
-                f"마감:{task['deadline']}일 "
-                f"| 중요:{task['importance']} "
-                f"| 강도:{task['difficulty']} "
-                f"| {task['duration']}시간"
-            )
+st.write(
+f"**{task['name']}** | "
+f"마감:{task['deadline']}일 "
+f"| 중요:{task['importance']} "
+f"| 강도:{task['difficulty']} "
+f"| {task['duration']}시간"
+)
 
-        with col2:
+with col2:
 
-            if st.button("삭제",key=f"del{i}"):
+if st.button("삭제",key=f"del{i}"):
 
-                remove=i
+remove=i
 
-    if remove is not None:
+if remove is not None:
 
-        st.session_state.tasks.pop(remove)
+st.session_state.tasks.pop(remove)
 
-        st.rerun()
-
+st.rerun()
 
 # ============================================================
 # RUN
@@ -227,7 +224,7 @@ else:
 run = st.button("🚀 AI 스케줄 생성")
 
 if "base_week" not in st.session_state:
-    st.session_state.base_week = generate_base_week()
+st.session_state.base_week = generate_base_week()
 
 base_week = st.session_state.base_week
 
@@ -247,142 +244,142 @@ col1, col2 = st.columns([3, 1])
 
 with col1:
 
-    st.metric(
-        "🔥 현재 Stress",
-        f"{score:.1f}"
-    )
+st.metric(
+"🔥 현재 Stress",
+f"{score:.1f}"
+)
 
-    st.progress(min(score / 100, 1.0))
+st.progress(min(score / 100, 1.0))
 
 with col2:
 
-    if score >= 80:
-        st.error("매우 높음")
+if score >= 80:
+st.error("매우 높음")
 
-    elif score >= 60:
-        st.warning("높음")
+elif score >= 60:
+st.warning("높음")
 
-    elif score >= 40:
-        st.info("보통")
+elif score >= 40:
+st.info("보통")
 
-    else:
-        st.success("낮음")
+else:
+st.success("낮음")
 # ============================================================
 # RUN AGENT
 # ============================================================
 
 if run:
 
-    # --------------------------------------------------------
-    # 기존 일정 생성
-    # --------------------------------------------------------
+# --------------------------------------------------------
+# 기존 일정 생성
+# --------------------------------------------------------
 
-    # base_week = generate_base_week()
+# base_week = generate_base_week()
 
 # ============================================================
 # 기존 일정(Session 유지)
 # ============================================================
 
 
-    
-    # --------------------------------------------------------
-    # DEMO MODE
-    # --------------------------------------------------------
 
-    if APP_MODE == "DEMO":
+# --------------------------------------------------------
+# DEMO MODE
+# --------------------------------------------------------
 
-        demo = run_demo(st.session_state.tasks)
+if APP_MODE == "DEMO":
 
-        st.session_state.result = {
+demo = run_demo(st.session_state.tasks)
 
-            "week": base_week,
+st.session_state.result = {
 
-            "logs": [],
+"week": base_week,
 
-            "history": demo["history"],
+"logs": [],
 
-            "thinking": demo["thinking"],
+"history": demo["history"],
 
-            "stress": {
+"thinking": demo["thinking"],
 
-                "score": demo["stress"],
+"stress": {
 
-                "daily": {}
+"score": demo["stress"],
 
-            },
+"daily": {}
 
-            "demo": demo
+},
 
-        }
+"demo": demo
 
-    else:
+}
 
-        # --------------------------------------------------------
-        # Reflect Function
-        # --------------------------------------------------------
+else:
 
-        def reflect_fn(week):
+# --------------------------------------------------------
+# Reflect Function
+# --------------------------------------------------------
 
-            flat = flatten_week(week)
+def reflect_fn(week):
 
-            result = analyze_schedule(flat)
+flat = flatten_week(week)
 
-            return result["score"]
+result = analyze_schedule(flat)
 
-        # --------------------------------------------------------
-        # Replan Function
-        # --------------------------------------------------------
+return result["score"]
 
-        def replan_fn(score):
+# --------------------------------------------------------
+# Replan Function
+# --------------------------------------------------------
 
-            return decide_replan({}, score)
+def replan_fn(score):
 
-        # --------------------------------------------------------
-        # AI Thinking Animation
-        # --------------------------------------------------------
+return decide_replan({}, score)
 
-        run_agent_animation()
+# --------------------------------------------------------
+# AI Thinking Animation
+# --------------------------------------------------------
 
-        show_reason()
-        # --------------------------------------------------------
-        # Agent
-        # --------------------------------------------------------
+run_agent_animation()
 
-        optimized_week, logs, history = agent_optimize(
+show_reason()
+# --------------------------------------------------------
+# Agent
+# --------------------------------------------------------
 
-            st.session_state.tasks,
+optimized_week, logs, history = agent_optimize(
 
-            base_week,
+st.session_state.tasks,
 
-            reflect_fn=reflect_fn,
+base_week,
 
-            replan_fn=replan_fn
+reflect_fn=reflect_fn,
 
-        )
+replan_fn=replan_fn
 
-        flat = flatten_week(optimized_week)
+)
 
-        stress = analyze_schedule(flat)
+flat = flatten_week(optimized_week)
 
-        thinking = generate_reasoning(
+stress = analyze_schedule(flat)
 
-            st.session_state.tasks
+thinking = generate_reasoning(
 
-        )
+st.session_state.tasks
 
-        st.session_state.result = {
+)
 
-            "week": optimized_week,
+st.session_state.result = {
 
-            "logs": logs,
+"week": optimized_week,
 
-            "history": history,
+"logs": logs,
 
-            "thinking": thinking,
+"history": history,
 
-            "stress": stress
+"thinking": thinking,
 
-        }
+"stress": stress
+
+}
 
 # ============================================================
 # OUTPUT
@@ -390,343 +387,310 @@ if run:
 
 if st.session_state.result is not None:
 
-    result = st.session_state.result
+result = st.session_state.result
 
-    week = result["week"]
+week = result["week"]
 
-    stress = result["stress"]
+stress = result["stress"]
 
-    score = stress["score"]
+score = stress["score"]
 
-    daily = stress["daily"]
-    
-    st.divider()
-    compare_calendar(
-    base_week,
-    week
+daily = stress["daily"]
+
+st.divider()
+
+compare_calendar(
+
+base_week,
+
+week
+
 )
-    before = analyze_schedule(
+before = analyze_schedule(
 
-        flatten_week(base_week)
+flatten_week(base_week)
 
 )["score"]
 
-    after = analyze_schedule(
+after = analyze_schedule(
 
-        flatten_week(week)
+flatten_week(week)
 
 )["score"]
 
-    draw_stress_compare(
+draw_stress_compare(
 
-        before,
+before,
 
-        after
-
-)
-
-    changes = analyze_changes(
-
-        base_week,
-
-        week
+after
 
 )
 
-    show_changes(changes)
-    day_name = {
-    "Monday":"월요일",
-    "Tuesday":"화요일",
-    "Wednesday":"수요일",
-    "Thursday":"목요일",
-    "Friday":"금요일",
-    "Saturday":"토요일",
-    "Sunday":"일요일"
-    }
+changes = analyze_changes(
 
-    for day in week:
+base_week,
 
-        st.subheader(f"🗓️ {day_name.get(day, day)}")
-        rows = []
-        schedules = sorted(
-            week[day],
-            key=lambda x: x["start"]
-        )
+week
 
-        for i, task in enumerate(schedules):
-            fixed = st.checkbox(
-                task["task"],
-                key=f"{day}_{i}_{task['start']}_{task['end']}"
-            )
-            task["fixed"] = fixed
-            rows.append({
-                "시간": f"{task['start']:02d}:00 ~ {task['end']:02d}:00",
-                "일정": task["task"]
-            })
+)
 
-        df = pd.DataFrame(rows)
-        # ===============================
-        # 🔥 Stress Row 추가
-        # ===============================
+show_changes(changes)
+day_name = {
+"Monday":"월요일",
+"Tuesday":"화요일",
+"Wednesday":"수요일",
+"Thursday":"목요일",
+"Friday":"금요일",
+"Saturday":"토요일",
+"Sunday":"일요일"
+}
 
-        stress_row = {
-            "시간": "🔥 Stress"
-        }
+for day in week:
 
-        day_keys = ["월", "화", "수", "목", "금"]
+st.subheader(f"🗓️ {day_name[day]}")
 
-        for col in day_keys:
-            stress_row[col] = ""
+rows=[]
 
-        df = pd.concat(
-            [pd.DataFrame([stress_row]), df],
-            ignore_index=True
-        )
+schedules=sorted(
 
-        st.dataframe(df, use_container_width=True, hide_index=True)
+week[day],
 
-        for item in schedules:
+key=lambda x:x["start"]
 
-            rows.append({
+)
 
-                "시간":
+for item in schedules:
 
-                f"{item['start']:02d}:00 ~ {item['end']:02d}:00",
+rows.append({
 
-                "일정":item["task"],
+"시간":
 
-                "종류":item["type"]
+f"{item['start']:02d}:00 ~ {item['end']:02d}:00",
 
-            })
+"일정":item["task"],
 
-        if len(rows)==0:
+"종류":item["type"]
 
-            st.info("일정 없음")
+})
 
-        else:
+if len(rows)==0:
 
-            df=pd.DataFrame(rows)
+st.info("일정 없음")
 
-            st.dataframe(
+else:
 
-                df,
+df=pd.DataFrame(rows)
 
-                hide_index=True,
+st.dataframe(
 
-                use_container_width=True
+df,
 
-            )
+hide_index=True,
 
+use_container_width=True
 
-    # ============================================================
-    # Stress Dashboard
-    # ============================================================
+)
 
-    st.divider()
-    st.header("🧠 AI Stress Dashboard")
 
-    st.metric(
-        "Stress Score",
-        f"{score:.1f}"
-    )
+# ============================================================
+# Stress Dashboard
+# ============================================================
 
-    st.progress(min(score / 100.0, 1.0))
+st.divider()
+st.header("🧠 AI Stress Dashboard")
 
-    if score >= 80:
-        st.error("🔥 매우 높은 스트레스가 예상됩니다.")
-    elif score >= 60:
-        st.warning("⚠️ 휴식을 권장합니다.")
-    elif score >= 40:
-        st.info("🙂 적절한 업무량입니다.")
-    else:
-        st.success("😄 여유로운 일정입니다.")
+st.metric(
+"Stress Score",
+f"{score:.1f}"
+)
 
-    # summary_text가 level을 요구하는 기존 버전도 동작하도록 보정
-    level = (
-        "매우 높음" if score >= 80 else
-        "높음" if score >= 60 else
-        "보통" if score >= 40 else
-        "낮음"
-    )
+st.progress(min(score / 100.0, 1.0))
 
-    st.write(
-        summary_text({
-            "score": score,
-            "level": level
-        })
-    )
+if score >= 80:
+st.error("🔥 매우 높은 스트레스가 예상됩니다.")
+elif score >= 60:
+st.warning("⚠️ 휴식을 권장합니다.")
+elif score >= 40:
+st.info("🙂 적절한 업무량입니다.")
+else:
+st.success("😄 여유로운 일정입니다.")
 
-    st.write("### ☕ AI 휴식 추천")
-    st.success(recommend_break(score))
+# summary_text가 level을 요구하는 기존 버전도 동작하도록 보정
+level = (
+"매우 높음" if score >= 80 else
+"높음" if score >= 60 else
+"보통" if score >= 40 else
+"낮음"
+)
 
-    # ============================================================
-    # Daily Stress
-    # ============================================================
+st.write(
+summary_text({
+"score": score,
+"level": level
+})
+)
 
-    if daily:
+st.write("### ☕ AI 휴식 추천")
+st.success(recommend_break(score))
 
-        st.subheader("📈 요일별 스트레스")
+# ============================================================
+# Daily Stress
+# ============================================================
 
-        daily_df = pd.DataFrame(
-            [
-                {
-                    "요일": k,
-                    "Stress": v
-                }
-                for k, v in daily.items()
-            ]
-        )
+if daily:
 
+st.subheader("📈 요일별 스트레스")
 
-        graph = pd.DataFrame({
-        "요일":list(daily.keys()),
-        "Stress":[
-        daily[d]["score"]
-        for d in daily
-        ]
-        })
-        st.bar_chart(
-        graph.set_index("요일")
-        )
+daily_df = pd.DataFrame(
+[
+{
+"요일": k,
+"Stress": v
+}
+for k, v in daily.items()
+]
+)
 
-    
+st.bar_chart(
+daily_df.set_index("요일")
+)
 
-    # ============================================================
-    # AI Reasoning
-    # ============================================================
+# ============================================================
+# AI Reasoning
+# ============================================================
 
-    st.divider()
+st.divider()
 
-    st.header("🧠 AI Thinking")
+st.header("🧠 AI Thinking")
 
-    thinking = result.get("thinking", [])
+thinking = result.get("thinking", [])
 
-    if isinstance(thinking, str):
+if isinstance(thinking, str):
 
-        st.write(thinking)
+st.write(thinking)
 
-    elif isinstance(thinking, list):
+elif isinstance(thinking, list):
 
-        for t in thinking:
+for t in thinking:
 
-            st.write("•", t)
+st.write("•", t)
 
-    # ============================================================
-    # Gemini Explanation
-    # ============================================================
+# ============================================================
+# Gemini Explanation
+# ============================================================
 
-    st.divider()
+st.divider()
 
-    st.header("🤖 AI Explanation")
+st.header("🤖 AI Explanation")
 
-    try:
+try:
 
-        explain = explain_schedule(
+explain = explain_schedule(
 
-            st.session_state.tasks,
+st.session_state.tasks,
 
-            result["logs"]
+result["logs"]
 
-        )
+)
 
-        st.success(explain)
+st.success(explain)
 
-    except Exception as e:
+except Exception as e:
 
-        st.warning(f"Fallback 설명 사용 ({e})")
+st.warning(f"Fallback 설명 사용 ({e})")
 
-    # ============================================================
-    # Overall Comment
-    # ============================================================
+# ============================================================
+# Overall Comment
+# ============================================================
 
-    st.subheader("📌 Overall Comment")
+st.subheader("📌 Overall Comment")
 
-    st.info(
-        overall_comment(score)
-    )
+st.info(
+overall_comment(score)
+)
 
-    # ============================================================
-    # One Line Summary
-    # ============================================================
+# ============================================================
+# One Line Summary
+# ============================================================
 
-    st.subheader("⚡ One-line Summary")
+st.subheader("⚡ One-line Summary")
 
-    try:
+try:
 
-        st.success(
-            one_line_summary(score)
-        )
+st.success(
+one_line_summary(score)
+)
 
-    except:
+except:
 
-        pass
+pass
 
-    # ============================================================
-    # Recommendation
-    # ============================================================
+# ============================================================
+# Recommendation
+# ============================================================
 
-    st.subheader("💡 AI Recommendation")
+st.subheader("💡 AI Recommendation")
 
-    try:
+try:
 
-        st.write(
-            recommend_action(score)
-        )
+st.write(
+recommend_action(score)
+)
 
-    except:
+except:
 
-        pass
+pass
 
-    # ============================================================
-    # Replan History
-    # ============================================================
+# ============================================================
+# Replan History
+# ============================================================
 
-    st.divider()
+st.divider()
 
-    st.header("🔄 Replan History")
+st.header("🔄 Replan History")
 
-    if len(result["history"]) == 0:
+if len(result["history"]) == 0:
 
-        st.info("Replan 없음")
+st.info("Replan 없음")
 
-    else:
+else:
 
-        st.json(result["history"])
+st.json(result["history"])
 
-    # ============================================================
-    # Scheduling Logs
-    # ============================================================
+# ============================================================
+# Scheduling Logs
+# ============================================================
 
-    st.header("📜 Scheduling Log")
+st.header("📜 Scheduling Log")
 
-    if len(result["logs"]) == 0:
+if len(result["logs"]) == 0:
 
-        st.info("Log 없음")
+st.info("Log 없음")
 
-    else:
+else:
 
-        st.json(result["logs"])
+st.json(result["logs"])
 
-    # ============================================================
-    # Debug
-    # ============================================================
+# ============================================================
+# Debug
+# ============================================================
 
-    with st.expander("🔧 Debug"):
+with st.expander("🔧 Debug"):
 
-        st.write("Mode :", APP_MODE)
+st.write("Mode :", APP_MODE)
 
-        st.write("Tasks")
+st.write("Tasks")
 
-        st.json(st.session_state.tasks)
+st.json(st.session_state.tasks)
 
-        st.write("Stress")
+st.write("Stress")
 
-        st.json(stress)
+st.json(stress)
 
-        st.write("History")
+st.write("History")
 
-        st.json(result["history"])
+st.json(result["history"])
 
-        st.write("Logs")
+st.write("Logs")
 
-        st.json(result["logs"])
+st.json(result["logs"])
