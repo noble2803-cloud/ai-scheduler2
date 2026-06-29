@@ -25,7 +25,7 @@ def calculate_priority(task):
     urgency = (8 - task["deadline"]) * 15
     importance = task["importance"] * 12
     difficulty = task["difficulty"] * 8
-    duration = task["duration"] * 5
+    duration = task["duration"] * 4
 
     return urgency + importance + difficulty + duration
 
@@ -54,6 +54,26 @@ def find_slot(schedule, duration):
 # ============================================================
 # 일정 추가
 # ============================================================
+def add_buffer(day_schedule):
+
+    if random.random() < 0.3:
+
+        slot = find_slot(day_schedule, 1)
+
+        if slot is not None:
+
+            day_schedule.append({
+
+                "task": "🧘 여유시간",
+
+                "start": slot,
+
+                "end": slot + 1,
+
+                "type": "BUFFER"
+
+            })
+
 
 def place_task(day_schedule, task):
 
@@ -146,6 +166,8 @@ def optimize_schedule(tasks, week):
             })
 
     return week, logs
+
+
 
 # ============================================================
 # Task 재정렬
