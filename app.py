@@ -339,7 +339,6 @@ if run:
 
         run_agent_animation()
 
-        status.success("AI 일정 생성 완료")
         show_reason()
         # --------------------------------------------------------
         # Agent
