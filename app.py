@@ -8,6 +8,7 @@ import streamlit as st
 import pandas as pd
 import time
 from calendar_ui import draw_calendar
+from compare_calendar import compare_calendar
 from scheduler import agent_optimize
 from stress import (
     flatten_week,
@@ -413,7 +414,13 @@ if st.session_state.result is not None:
 
     st.divider()
 
-    st.header("📅 AI 최적화 결과")
+    compare_calendar(
+
+    base_week,
+
+    week
+
+)
 
     day_name = {
 
