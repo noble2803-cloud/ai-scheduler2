@@ -9,6 +9,7 @@ import pandas as pd
 import time
 from calendar_ui import draw_calendar
 from compare_calendar import compare_calendar
+from agent_animation import run_agent_animation
 from scheduler import agent_optimize
 from stress import (
     flatten_week,
@@ -328,31 +329,7 @@ base_week = st.session_state.base_week
         # AI Thinking Animation
         # --------------------------------------------------------
 
-        status = st.empty()
-
-        progress = st.progress(0)
-
-        steps = [
-
-            "📅 기존 스케줄 분석",
-
-            "🧠 업무 우선순위 계산",
-
-            "📊 스트레스 예측",
-
-            "♻️ 일정 재배치",
-
-            "✅ 최종 스케줄 생성"
-
-        ]
-
-        for i, step in enumerate(steps):
-
-            status.info(step)
-
-            progress.progress((i + 1) / len(steps))
-
-            time.sleep(0.35)
+        run_agent_animation()
 
         status.success("AI 일정 생성 완료")
 
